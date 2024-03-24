@@ -13,7 +13,7 @@ import lombok.Data;
 @Data
 public abstract class AbstractEntity {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column(name = "created_at")
