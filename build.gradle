@@ -1,0 +1,64 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.2.4'
+	id 'io.spring.dependency-management' version '1.1.4'
+	id 'com.diffplug.spotless' version '6.19.0'
+}
+
+group = 'io.github.pravnkr'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+	testImplementation 'org.testcontainers:junit-jupiter'
+	testImplementation 'org.testcontainers:mysql'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+spotless {
+    lineEndings 'UNIX'
+    format 'misc', {
+        target '*.md', '.gitignore'
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+    yaml {
+        target 'src/**/*.{yaml,yml}'
+        jackson()
+            .feature('INDENT_OUTPUT', true)
+            .feature('ORDER_MAP_ENTRIES_BY_KEYS', true)
+    }
+    java {
+        toggleOffOn()
+        target 'src/*/java/**/*.java'
+        googleJavaFormat('1.17.0').reflowLongStrings()
+        importOrder('java|javax', 'org', 'com', 'io.github.pravnkr', '', '\\#')
+        removeUnusedImports()
+        formatAnnotations()
+    }
+}
